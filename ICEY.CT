@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="31">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"金币 Base"</Description>
+      <Options moHideChildren="1"/>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+aobscan(gold_INJECT,48 63 49 10 3B C1 0F 84 43)
+alloc(newmem,$1000,194F2672)
+
+alloc(pGold,$18)
+pGold:
+  dq 0
+
+label(code)
+label(return)
+
+newmem:
+  mov [pGold],rcx
+
+code:
+  movsxd  rcx,dword ptr [rcx+10]
+  cmp eax,ecx
+  jmp return
+
+gold_INJECT:
+  jmp newmem
+  nop
+return:
+registersymbol(gold_INJECT pGold)
+
+[DISABLE]
+
+gold_INJECT:
+  db 48 63 49 10 3B C1
+
+unregistersymbol(gold_INJECT pGold)
+dealloc(newmem pGold)
+
+{
+// ORIGINAL CODE - INJECTION POINT: 194F2672
+
+194F2641: 49 BB 20 2C 4F 19 00 00 00 00  -  mov r11,00000000194F2C20
+194F264B: 41 FF D3                       -  call r11
+194F264E: 48 83 C4 20                    -  add rsp,20
+194F2652: 48 89 45 C0                    -  mov [rbp-40],rax
+194F2656: 48 83 EC 20                    -  sub rsp,20
+194F265A: 49 BB 80 2C 4F 19 00 00 00 00  -  mov r11,00000000194F2C80
+194F2664: 41 FF D3                       -  call r11
+194F2667: 48 83 C4 20                    -  add rsp,20
+194F266B: 48 8B C8                       -  mov rcx,rax
+194F266E: 48 8B 45 C0                    -  mov rax,[rbp-40]
+// ---------- INJECTING HERE ----------
+194F2672: 48 63 49 10                    -  movsxd  rcx,dword ptr [rcx+10]
+194F2676: 3B C1                          -  cmp eax,ecx
+// ---------- DONE INJECTING  ----------
+194F2678: 0F 84 43 00 00 00              -  je 194F26C1
+194F267E: 48 8B 46 60                    -  mov rax,[rsi+60]
+194F2682: 48 89 45 C0                    -  mov [rbp-40],rax
+194F2686: 48 83 EC 20                    -  sub rsp,20
+194F268A: 49 BB 80 2C 4F 19 00 00 00 00  -  mov r11,00000000194F2C80
+194F2694: 41 FF D3                       -  call r11
+194F2697: 48 83 C4 20                    -  add rsp,20
+194F269B: 48 8B C8                       -  mov rcx,rax
+194F269E: 48 8B 45 C0                    -  mov rax,[rbp-40]
+194F26A2: 48 63 51 10                    -  movsxd  rdx,dword ptr [rcx+10]
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"金币"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[pGold]+10</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>7</ID>
+      <Description>"霸体/HP Base"</Description>
+      <Options moHideChildren="1"/>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>// 拥有霸体，并却被攻击才会触发
+
+define(bytes,89 47 28 48 8B 7D F8)
+define(direct,PlayerAttribute:set_currentEnergy+2f)
+
+[ENABLE]
+{$lua}
+  if syntaxcheck then return end
+  _checkMonoMethod('PlayerAttribute', 'set_currentEnergy')
+{$asm}
+
+
+assert(direct, bytes)
+alloc(newmem,$1000,direct)
+alloc(pSuperArmor,$16)
+registersymbol(pSuperArmor)
+pSuperArmor:
+  dq 0
+
+label(code)
+label(return)
+
+newmem:
+  mov [pSuperArmor],rdi
+
+  // hp
+  mov eax,[rdi+1c]
+  mov [rdi+20],eax
+
+  // super armor
+  mov [rdi+28],#10
+
+code:
+  mov rdi,[rbp-08]
+  jmp return
+
+direct:
+  jmp newmem
+  nop 2
+return:
+
+
+
+[DISABLE]
+{$lua}
+  if syntaxcheck then return end
+  _checkMonoMethod('PlayerAttribute', 'set_currentEnergy')
+{$asm}
+direct:
+  db bytes
+
+unregistersymbol(pSuperArmor)
+dealloc(newmem pSuperArmor)
+
+{
+PlayerAttribute:set_currentEnergy+2b - 48 83 C4 20           - add rsp,20
+PlayerAttribute:set_currentEnergy+2f - 89 47 28              - mov [rdi+28],eax
+PlayerAttribute:set_currentEnergy+32 - 48 8B 7D F8           - mov rdi,[rbp-08]
+}
+
+{
+// ORIGINAL CODE - INJECTION POINT: 194D8BCF
+
+194D8BA5: 48 83 EC 08                    -  sub rsp,08
+194D8BA9: 48 8B F9                       -  mov rdi,rcx
+194D8BAC: 48 89 55 F0                    -  mov [rbp-10],rdx
+194D8BB0: 4C 63 47 24                    -  movsxd  r8,dword ptr [rdi+24]
+194D8BB4: 48 63 4D F0                    -  movsxd  rcx,dword ptr [rbp-10]
+194D8BB8: 33 D2                          -  xor edx,edx
+194D8BBA: 48 83 EC 20                    -  sub rsp,20
+194D8BBE: 49 BB 40 8B 4D 19 00 00 00 00  -  mov r11,00000000194D8B40
+194D8BC8: 41 FF D3                       -  call r11
+194D8BCB: 48 83 C4 20                    -  add rsp,20
+// ---------- INJECTING HERE ----------
+194D8BCF: 89 47 28                       -  mov [rdi+28],eax
+194D8BD2: 48 8B 7D F8                    -  mov rdi,[rbp-08]
+// ---------- DONE INJECTING  ----------
+194D8BD6: C9                             -  leave 
+194D8BD7: C3                             -  ret 
+194D8BD8: 00 00                          -  add [rax],al
+194D8BDA: 00 00                          -  add [rax],al
+194D8BDC: 38 00                          -  cmp [rax],al
+194D8BDE: 00 00                          -  add [rax],al
+194D8BE0: 44 00 00                       -  add [rax],r8l
+194D8BE3: 00 01                          -  add [rcx],al
+194D8BE5: 04 03                          -  add al,03
+194D8BE7: 05 00 00 04 53                 -  add eax,53040000
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>8</ID>
+          <Description>"霸体"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[pSuperArmor]+28</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>10</ID>
+          <Description>"hp"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[pSuperArmor]+20</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11</ID>
+          <Description>"max hp"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[pSuperArmor]+1c</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>13</ID>
+      <Description>"免攻击伤害"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>define(bytes,89 47 20)
+define(direct,PlayerAttribute:set_currentHP+2f)
+
+[ENABLE]
+{$lua}
+  if syntaxcheck then return end
+  _checkMonoMethod('PlayerAttribute', 'set_currentHP')
+{$asm}
+
+
+assert(direct, bytes)
+direct:
+  db 90 90 90
+
+
+[DISABLE]
+{$lua}
+  if syntaxcheck then return end
+  _checkMonoMethod('PlayerAttribute', 'set_currentHP')
+{$asm}
+direct:
+  db bytes
+
+{
+  PlayerAttribute:set_currentHP+2b - 48 83 C4 20           - add rsp,20
+  PlayerAttribute:set_currentHP+2f - 89 47 20              - mov [rdi+20],eax
+  PlayerAttribute:set_currentHP+32 - 48 8B 7D F8           - mov rdi,[rbp-08]
+}
+
+{
+// ORIGINAL CODE - INJECTION POINT: 1898892F
+
+18988905: 48 83 EC 08                    -  sub rsp,08
+18988909: 48 8B F9                       -  mov rdi,rcx
+1898890C: 48 89 55 F0                    -  mov [rbp-10],rdx
+18988910: 4C 63 47 1C                    -  movsxd  r8,dword ptr [rdi+1C]
+18988914: 48 63 4D F0                    -  movsxd  rcx,dword ptr [rbp-10]
+18988918: 33 D2                          -  xor edx,edx
+1898891A: 48 83 EC 20                    -  sub rsp,20
+1898891E: 49 BB 60 89 98 18 00 00 00 00  -  mov r11,0000000018988960
+18988928: 41 FF D3                       -  call r11
+1898892B: 48 83 C4 20                    -  add rsp,20
+// ---------- INJECTING HERE ----------
+1898892F: 89 47 20                       -  mov [rdi+20],eax
+// ---------- DONE INJECTING  ----------
+18988932: 48 8B 7D F8                    -  mov rdi,[rbp-08]
+18988936: C9                             -  leave 
+18988937: C3                             -  ret 
+18988938: 00 00                          -  add [rax],al
+1898893A: 00 00                          -  add [rax],al
+1898893C: 38 00                          -  cmp [rax],al
+1898893E: 00 00                          -  add [rax],al
+18988940: 44 00 00                       -  add [rax],r8l
+18988943: 00 01                          -  add [rcx],al
+18988945: 04 03                          -  add al,03
+18988947: 05 00 00 04 53                 -  add eax,53040000
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>17</ID>
+      <Description>"999999 连击"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>// 连击增加攻击力
+
+define(bytes,FF C0 89 46 3C)
+define(direct,UIHitsGradeController:BeHited+e9)
+
+[ENABLE]
+{$lua}
+  if syntaxcheck then return end
+  _checkMonoMethod('UIHitsGradeController', 'BeHited')
+{$asm}
+
+// 判断这个地址[direct]的字节数组是否匹配
+assert(direct, bytes)
+
+// 申请一块内存
+alloc(newmem,$1000,direct)
+
+label(return)
+
+newmem:
+  mov eax, #999999
+  mov [rsi+3C],eax
+  jmp return
+
+direct:
+  jmp newmem
+return:
+
+[DISABLE]
+{$lua}
+  if syntaxcheck then return end
+  _checkMonoMethod('UIHitsGradeController', 'BeHited')
+{$asm}
+
+direct:
+  db bytes
+
+dealloc(newmem)
+
+{
+  UIHitsGradeController:BeHited+e9 - FF C0    - inc eax
+  UIHitsGradeController:BeHited+eb - 89 46 3C - mov [rsi+3C],eax
+}
+
+{
+// ORIGINAL CODE - INJECTION POINT: 00794979
+
+""+79494E: 41 FF D3                       -  call r11
+""+794951: 48 83 C4 20                    -  add rsp,20
+""+794955: 48 8B C8                       -  mov rcx,rax
+""+794958: BA 01 00 00 00                 -  mov edx,00000001
+""+79495D: 48 83 EC 20                    -  sub rsp,20
+""+794961: 83 38 00                       -  cmp dword ptr [rax],00
+""+794964: 49 BB 00 30 7C 04 00 00 00 00  -  mov r11,00000000047C3000
+""+79496E: 41 FF D3                       -  call r11
+""+794971: 48 83 C4 20                    -  add rsp,20
+""+794975: 48 63 46 3C                    -  movsxd  rax,dword ptr [rsi+3C]
+// ---------- INJECTING HERE ----------
+""+794979: FF C0                          -  inc eax
+""+79497B: 89 46 3C                       -  mov [rsi+3C],eax
+// ---------- DONE INJECTING  ----------
+""+79497E: 48 8B 46 18                    -  mov rax,[rsi+18]
+""+794982: 48 89 45 D0                    -  mov [rbp-30],rax
+""+794986: 48 8D 4E 3C                    -  lea rcx,[rsi+3C]
+""+79498A: 48 83 EC 20                    -  sub rsp,20
+""+79498E: 49 BB F0 92 7A 04 00 00 00 00  -  mov r11,00000000047A92F0
+""+794998: 41 FF D3                       -  call r11
+""+79499B: 48 83 C4 20                    -  add rsp,20
+""+79499F: 48 8B D0                       -  mov rdx,rax
+""+7949A2: 48 8B 45 D0                    -  mov rax,[rbp-30]
+""+7949A6: 48 8B C8                       -  mov rcx,rax
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>19</ID>
+      <Description>"锁怒气"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>//怒气无消耗
+
+define(bytes,89 48 34)
+define(direct,PlayerFlashAbility:Swipe+364)
+
+[ENABLE]
+{$lua}
+  if syntaxcheck then return end
+  _checkMonoMethod('PlayerFlashAbility', 'Swipe')
+{$asm}
+
+assert(direct, bytes)
+direct:
+  nop
+  nop
+  nop
+
+
+[DISABLE]
+{$lua}
+  if syntaxcheck then return end
+  _checkMonoMethod('PlayerFlashAbility', 'Swipe')
+{$asm}
+
+direct:
+  db bytes
+
+{
+  PlayerFlashAbility:Swipe+364 - 89 48 34  - mov [rax+34],ecx
+}
+{
+// ORIGINAL CODE - INJECTION POINT: 007BA1C4
+
+""+7BA19B: 48 83 C4 20                    -  add rsp,20
+""+7BA19F: 4C 8B C0                       -  mov r8,rax
+""+7BA1A2: 48 8B 4D D8                    -  mov rcx,[rbp-28]
+""+7BA1A6: 33 D2                          -  xor edx,edx
+""+7BA1A8: 48 83 EC 20                    -  sub rsp,20
+""+7BA1AC: 49 BB 60 89 98 18 00 00 00 00  -  mov r11,0000000018988960
+""+7BA1B6: 41 FF D3                       -  call r11
+""+7BA1B9: 48 83 C4 20                    -  add rsp,20
+""+7BA1BD: 48 8B C8                       -  mov rcx,rax
+""+7BA1C0: 48 8B 45 E0                    -  mov rax,[rbp-20]
+// ---------- INJECTING HERE ----------
+""+7BA1C4: 89 48 34                       -  mov [rax+34],ecx
+// ---------- DONE INJECTING  ----------
+""+7BA1C7: 48 83 EC 20                    -  sub rsp,20
+""+7BA1CB: 49 BB 10 12 94 18 00 00 00 00  -  mov r11,0000000018941210
+""+7BA1D5: 41 FF D3                       -  call r11
+""+7BA1D8: 48 83 C4 20                    -  add rsp,20
+""+7BA1DC: 48 8B 80 B0 00 00 00           -  mov rax,[rax+000000B0]
+""+7BA1E3: 48 8B 4F 18                    -  mov rcx,[rdi+18]
+""+7BA1E7: 48 63 51 34                    -  movsxd  rdx,dword ptr [rcx+34]
+""+7BA1EB: 48 8B C8                       -  mov rcx,rax
+""+7BA1EE: 48 83 EC 20                    -  sub rsp,20
+""+7BA1F2: 83 38 00                       -  cmp dword ptr [rax],00
+""+7BA1F5: 49 BB 10 A6 7B 00 00 00 00 00  -  mov r11,00000000007BA610
+}
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <Comments>0000000000000000
+0000000027000000
+0000000027FFFFFF
+mov [rdi+00000094],eax
+</Comments>
+  <LuaScript>-- 检查是否启用mono，启动后JIT编译指定的函数
+function _checkMonoMethod(cName, mName)
+
+  -- 检查参数
+  if cName == nil and mName == nil then return end
+
+  -- 检查是否附加进程
+  -- showMessage(process)
+  if process == nil and readInteger(process) == 0 then
+    local msg = 'No process detected.'
+    print(msg)
+    error(msg)
+    return
+  end
+
+  -- 激活Mono
+  mono_initialize()
+
+  -- Jit编译
+  if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', cName, mName)
+    mono_compile_method(mId)
+  end
+end
+</LuaScript>
+  <DisassemblerComments>
+    <DisassemblerComment>
+      <Address>00794860</Address>
+      <Comment>连击增加时
+</Comment>
+    </DisassemblerComment>
+    <DisassemblerComment>
+      <Address>007A976C</Address>
+      <Comment>连击攻击力清0
+</Comment>
+    </DisassemblerComment>
+    <DisassemblerComment>
+      <Address>007BA1C4</Address>
+      <Comment>消耗怒气时
+</Comment>
+    </DisassemblerComment>
+    <DisassemblerComment>
+      <Address>1899FF93</Address>
+      <Comment>连击清0时
+</Comment>
+    </DisassemblerComment>
+    <DisassemblerComment>
+      <Address>189EC3FF</Address>
+      <Comment>敌人受到伤害时
+</Comment>
+    </DisassemblerComment>
+    <DisassemblerComment>
+      <Address>194F68B6</Address>
+      <Comment>读 HP
+</Comment>
+    </DisassemblerComment>
+  </DisassemblerComments>
+</CheatTable>
